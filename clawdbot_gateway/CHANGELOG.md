@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.9
+- Install: auto-confirm module purge only when needed.
+
 ## 0.2.8
 - Install: always reinstall dependencies without confirmation.
 
