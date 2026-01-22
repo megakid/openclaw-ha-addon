@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.14
+- Add pretty log formatting options for the add-on Log tab.
+
+## 0.2.13
+- Add icon.png and logo.png (cyber-lobster mascot).
+- Add DOCS.md with detailed documentation.
+- Simplify README.md as add-on store intro.
+- Follow Home Assistant add-on presentation best practices.
+
 ## 0.2.12
 - Docker: install Bun runtime.
 
