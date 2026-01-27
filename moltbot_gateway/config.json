@@ -1,10 +1,10 @@
 {
-  "name": "Clawdbot Gateway",
-  "version": "0.2.14",
-  "slug": "clawdbot_gateway",
-  "description": "Clawdbot Gateway (SSH-tunneled, HA add-on)",
-  "url": "https://github.com/WolframRavenwolf/clawdbot-ha-addon",
-  "documentation": "https://github.com/WolframRavenwolf/clawdbot-ha-addon",
+  "name": "Moltbot Gateway",
+  "version": "0.2.16",
+  "slug": "moltbot_gateway",
+  "description": "Moltbot Gateway (SSH-tunneled, HA add-on)",
+  "url": "https://github.com/WolframRavenwolf/moltbot-ha-addon",
+  "documentation": "https://github.com/WolframRavenwolf/moltbot-ha-addon",
   "arch": ["aarch64", "armv7", "amd64"],
   "startup": "services",
   "boot": "auto",
@@ -13,8 +13,8 @@
   "homeassistant_api": false,
   "map": ["config:rw"],
   "environment": {
-    "HOME": "/config/clawdbot",
-    "GH_CONFIG_DIR": "/config/clawdbot/.config/gh"
+    "HOME": "/config/moltbot",
+    "GH_CONFIG_DIR": "/config/moltbot/.config/gh"
   },
   "options": {
     "port": 18789,
@@ -22,7 +22,7 @@
     "log_format": "pretty",
     "log_color": false,
     "log_fields": "",
-    "repo_url": "https://github.com/clawdbot/clawdbot.git",
+    "repo_url": "https://github.com/moltbot/moltbot.git",
     "branch": "",
     "github_token": "",
     "ssh_port": 2222,

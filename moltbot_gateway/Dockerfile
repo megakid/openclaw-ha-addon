@@ -49,7 +49,7 @@ RUN apt-get update \
 RUN npm install -g bun pnpm \
   && mkdir -p /pnpm \
   && pnpm config set global-bin-dir /pnpm \
-  && pnpm add -g clawdhub
+  && pnpm add -g molthub
 
 RUN pip3 install --no-cache-dir --break-system-packages homeassistant-cli uv
 
@@ -160,7 +160,7 @@ RUN go install github.com/steipete/wacli/cmd/wacli@${WACLI_VERSION} && go clean 
 
 # ------------------------------------------------------------------------------
 
-WORKDIR /opt/clawdbot
+WORKDIR /opt/moltbot
 
 COPY run.sh /run.sh
 RUN chmod +x /run.sh

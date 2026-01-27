@@ -1,11 +1,11 @@
-# Clawdbot Home Assistant Add-ons
+# Moltbot Home Assistant Add-ons
 
-This repository contains Home Assistant add-ons for Clawdbot.
+This repository contains Home Assistant add-ons for Moltbot.
 
 ## Add-ons
 
-### clawdbot_gateway
-Clawdbot Gateway for HA OS with SSH tunnel support for Mac node connections.
+### moltbot_gateway
+Moltbot Gateway for HA OS with SSH tunnel support for Mac node connections.
 
 **Included tools:**
 - **gog** — Google Workspace CLI (Gmail, Calendar, Drive, Contacts, Sheets, Docs). See [gogcli.sh](https://gogcli.sh)
@@ -16,9 +16,9 @@ Clawdbot Gateway for HA OS with SSH tunnel support for Mac node connections.
 1. Go to **Settings → Add-ons → Add-on Store → ⋮ → Repositories**
 2. Add this repository:
    ```
-   https://github.com/WolframRavenwolf/clawdbot-ha-addon
+   https://github.com/WolframRavenwolf/moltbot-ha-addon
    ```
-3. Find "Clawdbot Gateway" in the add-on store and install
+3. Find "Moltbot Gateway" in the add-on store and install
 
 ## Configuration
 
@@ -26,13 +26,13 @@ Clawdbot Gateway for HA OS with SSH tunnel support for Mac node connections.
 |--------|-------------|
 | `port` | Gateway WebSocket port (default: 18789) |
 | `verbose` | Enable verbose logging |
-| `repo_url` | Clawdbot source repository |
+| `repo_url` | Moltbot source repository |
 | `branch` | Branch to checkout (optional, uses repo's default if omitted) |
 | `github_token` | GitHub token for private repos |
 | `ssh_port` | SSH server port for tunnel access (default: 2222) |
 | `ssh_authorized_keys` | Public keys for SSH access |
 
 ## Links
-- [Clawdbot](https://github.com/clawdbot/clawdbot)
+- [Moltbot](https://github.com/moltbot/moltbot)
 - [gog CLI](https://gogcli.sh)
 - [GitHub CLI](https://cli.github.com)

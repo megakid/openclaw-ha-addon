@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.16
+- Migrate legacy /config/clawdbot data to /config/moltbot on startup.
+
+## 0.2.15
+- Rename legacy references to Moltbot across the add-on.
+
 ## 0.2.14
 - Add pretty log formatting options for the add-on Log tab.
 
@@ -14,7 +20,7 @@
 
 ## 0.2.11
 - Docker: install GitHub CLI.
-- Storage: persist root home directories under /config/clawdbot.
+- Storage: persist root home directories under /config/moltbot.
 - Docker: refresh base image/toolchain and update gogcli. Thanks @niemyjski! (PR #2)
 
 ## 0.2.10
@@ -27,7 +33,7 @@
 - Install: always reinstall dependencies without confirmation.
 
 ## 0.2.7
-- Docker: install clawdhub and Home Assistant CLI.
+- Docker: install molthub and Home Assistant CLI.
 
 ## 0.2.6
 - Auto-restart gateway on unclean exits (e.g., shutdown timeout).
@@ -38,13 +44,13 @@
 
 ## 0.2.4
 - Docs: repo-based install steps and add-on info links.
-- Docker: set WORKDIR to /opt/clawdbot.
+- Docker: set WORKDIR to /opt/moltbot.
 - Logs: stream gateway log file into add-on stdout.
 - Docker: add ripgrep for faster log searches.
 
 ## 0.2.3
 - Docs: repo-based install steps and add-on info links.
-- Docker: set WORKDIR to /opt/clawdbot.
+- Docker: set WORKDIR to /opt/moltbot.
 - Logs: stream gateway log file into add-on stdout.
 
 ## 0.2.2
