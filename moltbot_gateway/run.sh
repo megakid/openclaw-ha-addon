@@ -7,6 +7,14 @@ log() {
 
 log "run.sh version=2026-01-19-branch-tags"
 
+LEGACY_BASE_DIR=/config/clawdbot
+if [ -d "${LEGACY_BASE_DIR}" ] && [ ! -d /config/moltbot ]; then
+  log "migrating ${LEGACY_BASE_DIR} -> /config/moltbot"
+  mv "${LEGACY_BASE_DIR}" /config/moltbot
+elif [ -d "${LEGACY_BASE_DIR}" ] && [ -d /config/moltbot ]; then
+  log "legacy config dir ${LEGACY_BASE_DIR} present; skipping migration"
+fi
+
 BASE_DIR=/config/moltbot
 STATE_DIR="${BASE_DIR}/.moltbot"
 REPO_DIR="${BASE_DIR}/moltbot-src"

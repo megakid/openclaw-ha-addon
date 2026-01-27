@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.16
+- Migrate legacy /config/clawdbot data to /config/moltbot on startup.
+
 ## 0.2.15
 - Rename legacy references to Moltbot across the add-on.
 
