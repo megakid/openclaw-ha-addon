@@ -10,40 +10,93 @@ log "run.sh version=2026-01-19-branch-tags"
 LEGACY_BASE_DIR=/config/clawdbot
 TARGET_BASE_DIR=/config/moltbot
 
-rename_legacy_paths() {
+rename_legacy_files() {
   local root="$1"
-  local path new_path renamed=0
+  local path dir base new_base new_path renamed=0
 
   if [ ! -d "${root}" ]; then
     return
   fi
 
   while IFS= read -r -d '' path; do
-    new_path="${path//clawd/molt}"
-    if [ "${path}" = "${new_path}" ]; then
+    dir="$(dirname "${path}")"
+    base="$(basename "${path}")"
+    new_base="${base//clawd/molt}"
+    if [ "${base}" = "${new_base}" ]; then
       continue
     fi
+    new_path="${dir}/${new_base}"
     if [ -e "${new_path}" ]; then
       log "skip rename ${path} -> ${new_path} (exists)"
       continue
     fi
     mv "${path}" "${new_path}"
     renamed=$((renamed + 1))
-  done < <(find "${root}" -depth -name "*clawd*" -print0)
+  done < <(find "${root}" -type f -name "*clawd*" -print0)
+
+  while IFS= read -r -d '' path; do
+    dir="$(dirname "${path}")"
+    base="$(basename "${path}")"
+    new_base="${base//clawd/molt}"
+    if [ "${base}" = "${new_base}" ]; then
+      continue
+    fi
+    new_path="${dir}/${new_base}"
+    if [ -e "${new_path}" ]; then
+      log "skip rename ${path} -> ${new_path} (exists)"
+      continue
+    fi
+    mv "${path}" "${new_path}"
+    renamed=$((renamed + 1))
+  done < <(find "${root}" -type l -name "*clawd*" -print0)
 
   if [ "${renamed}" -gt 0 ]; then
-    log "renamed ${renamed} legacy paths under ${root}"
+    log "renamed ${renamed} legacy files under ${root}"
+  fi
+}
+
+rename_legacy_dirs() {
+  local root="$1"
+  local path dir base new_base new_path renamed=0
+
+  if [ ! -d "${root}" ]; then
+    return
+  fi
+
+  while IFS= read -r -d '' path; do
+    if [ "${path}" = "${root}" ]; then
+      continue
+    fi
+    dir="$(dirname "${path}")"
+    base="$(basename "${path}")"
+    new_base="${base//clawd/molt}"
+    if [ "${base}" = "${new_base}" ]; then
+      continue
+    fi
+    new_path="${dir}/${new_base}"
+    if [ -e "${new_path}" ]; then
+      log "skip rename ${path} -> ${new_path} (exists)"
+      continue
+    fi
+    mv "${path}" "${new_path}"
+    renamed=$((renamed + 1))
+  done < <(find "${root}" -depth -type d -name "*clawd*" -print0)
+
+  if [ "${renamed}" -gt 0 ]; then
+    log "renamed ${renamed} legacy dirs under ${root}"
   fi
 }
 
 if [ -d "${LEGACY_BASE_DIR}" ] && [ ! -d "${TARGET_BASE_DIR}" ]; then
   log "migrating ${LEGACY_BASE_DIR} -> ${TARGET_BASE_DIR}"
+  rename_legacy_files "${LEGACY_BASE_DIR}"
+  rename_legacy_dirs "${LEGACY_BASE_DIR}"
   mv "${LEGACY_BASE_DIR}" "${TARGET_BASE_DIR}"
 elif [ -d "${LEGACY_BASE_DIR}" ] && [ -d "${TARGET_BASE_DIR}" ]; then
   log "legacy config dir ${LEGACY_BASE_DIR} present; keeping ${TARGET_BASE_DIR}"
+  rename_legacy_files "${LEGACY_BASE_DIR}"
+  rename_legacy_dirs "${LEGACY_BASE_DIR}"
 fi
-
-rename_legacy_paths "${TARGET_BASE_DIR}"
 
 BASE_DIR=/config/moltbot
 STATE_DIR="${BASE_DIR}/.moltbot"

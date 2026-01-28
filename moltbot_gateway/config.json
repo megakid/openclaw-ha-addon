@@ -1,6 +1,6 @@
 {
   "name": "Moltbot Gateway",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "slug": "moltbot_gateway",
   "description": "Moltbot Gateway (SSH-tunneled, HA add-on)",
   "url": "https://github.com/WolframRavenwolf/moltbot-ha-addon",

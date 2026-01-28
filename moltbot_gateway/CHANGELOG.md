@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.20
+- Rename legacy files before directories during migration.
+
 ## 0.2.19
 - Remove gateway token env var aliasing.
 
