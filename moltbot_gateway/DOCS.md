@@ -83,7 +83,7 @@ Use `pnpm moltbot configure` or `pnpm moltbot onboard` to set it in `moltbot.jso
 
 ## Data Locations
 
-On startup, the add-on migrates `/config/clawdbot` to `/config/moltbot` if needed.
+On startup, the add-on migrates `/config/clawdbot` to `/config/moltbot` and renames legacy `clawd*` paths.
 
 | Path | Description |
 |------|-------------|

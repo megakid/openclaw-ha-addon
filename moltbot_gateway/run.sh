@@ -8,12 +8,42 @@ log() {
 log "run.sh version=2026-01-19-branch-tags"
 
 LEGACY_BASE_DIR=/config/clawdbot
-if [ -d "${LEGACY_BASE_DIR}" ] && [ ! -d /config/moltbot ]; then
-  log "migrating ${LEGACY_BASE_DIR} -> /config/moltbot"
-  mv "${LEGACY_BASE_DIR}" /config/moltbot
-elif [ -d "${LEGACY_BASE_DIR}" ] && [ -d /config/moltbot ]; then
-  log "legacy config dir ${LEGACY_BASE_DIR} present; skipping migration"
+TARGET_BASE_DIR=/config/moltbot
+
+rename_legacy_paths() {
+  local root="$1"
+  local path new_path renamed=0
+
+  if [ ! -d "${root}" ]; then
+    return
+  fi
+
+  while IFS= read -r -d '' path; do
+    new_path="${path//clawd/molt}"
+    if [ "${path}" = "${new_path}" ]; then
+      continue
+    fi
+    if [ -e "${new_path}" ]; then
+      log "skip rename ${path} -> ${new_path} (exists)"
+      continue
+    fi
+    mv "${path}" "${new_path}"
+    renamed=$((renamed + 1))
+  done < <(find "${root}" -depth -name "*clawd*" -print0)
+
+  if [ "${renamed}" -gt 0 ]; then
+    log "renamed ${renamed} legacy paths under ${root}"
+  fi
+}
+
+if [ -d "${LEGACY_BASE_DIR}" ] && [ ! -d "${TARGET_BASE_DIR}" ]; then
+  log "migrating ${LEGACY_BASE_DIR} -> ${TARGET_BASE_DIR}"
+  mv "${LEGACY_BASE_DIR}" "${TARGET_BASE_DIR}"
+elif [ -d "${LEGACY_BASE_DIR}" ] && [ -d "${TARGET_BASE_DIR}" ]; then
+  log "legacy config dir ${LEGACY_BASE_DIR} present; keeping ${TARGET_BASE_DIR}"
 fi
+
+rename_legacy_paths "${TARGET_BASE_DIR}"
 
 BASE_DIR=/config/moltbot
 STATE_DIR="${BASE_DIR}/.moltbot"
@@ -61,12 +91,6 @@ export MOLTBOT_CONFIG_PATH="${STATE_DIR}/moltbot.json"
 export CLAWDBOT_STATE_DIR="${STATE_DIR}"
 export CLAWDBOT_CONFIG_PATH="${STATE_DIR}/moltbot.json"
 
-if [ -n "${MOLTBOT_GATEWAY_TOKEN:-}" ] && [ -z "${CLAWDBOT_GATEWAY_TOKEN:-}" ]; then
-  export CLAWDBOT_GATEWAY_TOKEN="${MOLTBOT_GATEWAY_TOKEN}"
-elif [ -n "${CLAWDBOT_GATEWAY_TOKEN:-}" ] && [ -z "${MOLTBOT_GATEWAY_TOKEN:-}" ]; then
-  export MOLTBOT_GATEWAY_TOKEN="${CLAWDBOT_GATEWAY_TOKEN}"
-fi
-
 log "config path=${MOLTBOT_CONFIG_PATH}"
 
 cat > /etc/profile.d/moltbot.sh <<EOF
@@ -77,11 +101,6 @@ export MOLTBOT_STATE_DIR="${STATE_DIR}"
 export MOLTBOT_CONFIG_PATH="${STATE_DIR}/moltbot.json"
 export CLAWDBOT_STATE_DIR="${STATE_DIR}"
 export CLAWDBOT_CONFIG_PATH="${STATE_DIR}/moltbot.json"
-if [ -n "\${MOLTBOT_GATEWAY_TOKEN:-}" ] && [ -z "\${CLAWDBOT_GATEWAY_TOKEN:-}" ]; then
-  export CLAWDBOT_GATEWAY_TOKEN="\${MOLTBOT_GATEWAY_TOKEN}"
-elif [ -n "\${CLAWDBOT_GATEWAY_TOKEN:-}" ] && [ -z "\${MOLTBOT_GATEWAY_TOKEN:-}" ]; then
-  export MOLTBOT_GATEWAY_TOKEN="\${CLAWDBOT_GATEWAY_TOKEN}"
-fi
 if [ -n "\${SSH_CONNECTION:-}" ]; then
   cd "${REPO_DIR}" 2>/dev/null || true
 fi
