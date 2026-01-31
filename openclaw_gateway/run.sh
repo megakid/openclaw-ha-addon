@@ -202,6 +202,7 @@ else
 fi
 
 if [ "${should_install}" -eq 1 ]; then
+  log "running openclaw install (no restart)"
   OPENCLAW_INSTALL_METHOD=git \
     OPENCLAW_GIT_DIR="${REPO_DIR}" \
     OPENCLAW_GIT_UPDATE=0 \
@@ -212,7 +213,10 @@ if [ "${should_install}" -eq 1 ]; then
       --git-dir "${REPO_DIR}" \
       --no-git-update \
       --no-prompt \
-      --no-onboard
+      --no-onboard \
+      --no-restart
+  log "openclaw install complete; exiting to simulate restart"
+  exit 0
 fi
 
 cd "${REPO_DIR}"
@@ -222,13 +226,6 @@ if [ ! -x "${REPO_DIR}/node_modules/.bin/openclaw" ]; then
   log "bootstrap dependencies for openclaw CLI"
   pnpm install --no-frozen-lockfile --prefer-frozen-lockfile
 fi
-
-log "running openclaw update"
-update_args=(update)
-update_args+=(--no-restart)
-pnpm openclaw "${update_args[@]}"
-log "openclaw update complete; exiting to simulate restart"
-exit 0
 
 if [ ! -f "${OPENCLAW_CONFIG_PATH}" ]; then
   pnpm openclaw setup
