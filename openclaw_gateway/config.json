@@ -1,6 +1,6 @@
 {
   "name": "OpenClaw Gateway",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "slug": "openclaw_gateway",
   "description": "OpenClaw Gateway (SSH-tunneled, HA add-on)",
   "url": "https://github.com/megakid/openclaw-ha-addon",
@@ -23,7 +23,7 @@
     "log_color": false,
     "log_fields": "",
     "repo_url": "https://github.com/openclaw/openclaw.git",
-    "update_channel": "stable",
+    "ref": "",
     "github_token": "",
     "ssh_port": 2222,
     "ssh_authorized_keys": ""
@@ -35,7 +35,7 @@
     "log_color": "bool",
     "log_fields": "str?",
     "repo_url": "str",
-    "update_channel": "list(stable|beta|dev)",
+    "ref": "str?",
     "github_token": "password?",
     "ssh_port": "int(1,65535)",
     "ssh_authorized_keys": "str?"

@@ -25,7 +25,7 @@ This add-on runs the OpenClaw Gateway on Home Assistant OS, providing secure rem
 | `ssh_port` | SSH server port (default: `2222`) |
 | `port` | Gateway WebSocket port (default: `18789`) |
 | `repo_url` | OpenClaw source repository URL |
-| `update_channel` | Update channel for `openclaw update`: `stable`, `beta`, or `dev` |
+| `ref` | Git ref to checkout (branch, tag, or commit) |
 | `github_token` | Token for private repository access |
 | `verbose` | Enable verbose logging |
 | `log_format` | Log output format in the add-on Log tab: `pretty` or `raw` |
@@ -86,9 +86,9 @@ Use `pnpm openclaw configure` or `pnpm openclaw onboard` to set it in `openclaw.
 
 If you bind beyond loopback (`lan/tailnet/auto`), ensure gateway authentication is configured in `openclaw.json`.
 
-### Update Channel
+### Ref Pinning
 
-Set `update_channel` in the add-on options to `stable`, `beta`, or `dev`, then restart the add-on to apply.
+Set `ref` in the add-on options to a branch, tag, or commit SHA. The ref must exist in the remote repository or the add-on will exit with an error. Restart the add-on to apply changes.
 
 ## Data Locations
 

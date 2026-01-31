@@ -75,7 +75,7 @@ auth_from_opts() {
 }
 
 REPO_URL="$(jq -r .repo_url /data/options.json)"
-UPDATE_CHANNEL="$(jq -r '.update_channel // empty' /data/options.json 2>/dev/null || true)"
+REPO_REF="$(jq -r '.ref // empty' /data/options.json 2>/dev/null || true)"
 TOKEN_OPT="$(jq -r '.github_token // empty' /data/options.json)"
 
 if [ -z "${REPO_URL}" ] || [ "${REPO_URL}" = "null" ]; then
@@ -85,6 +85,10 @@ fi
 
 if [ -n "${TOKEN_OPT}" ] && [ "${TOKEN_OPT}" != "null" ]; then
   REPO_URL="https://${TOKEN_OPT}@${REPO_URL#https://}"
+fi
+
+if [ "${REPO_REF}" = "null" ]; then
+  REPO_REF=""
 fi
 
 SSH_PORT="$(jq -r .ssh_port /data/options.json 2>/dev/null || true)"
@@ -145,16 +149,36 @@ else
 fi
 
 before_sha="$(git -C "${REPO_DIR}" rev-parse HEAD 2>/dev/null || true)"
-branch_name="$(git -C "${REPO_DIR}" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 
 log "checking for repo updates"
 if git -C "${REPO_DIR}" fetch --all --prune --tags; then
-  if [ -n "${branch_name}" ] && [ "${branch_name}" != "HEAD" ]; then
-    if ! git -C "${REPO_DIR}" pull --rebase; then
-      log "git pull failed; continuing without update"
+  if [ -n "${REPO_REF}" ]; then
+    resolved_sha="$(git -C "${REPO_DIR}" rev-parse --verify --quiet "${REPO_REF}^{commit}" 2>/dev/null || true)"
+    if [ -z "${resolved_sha}" ]; then
+      resolved_sha="$(git -C "${REPO_DIR}" rev-parse --verify --quiet "refs/remotes/origin/${REPO_REF}^{commit}" 2>/dev/null || true)"
+    fi
+    if [ -z "${resolved_sha}" ]; then
+      log "ref=${REPO_REF} not found; exiting"
+      exit 1
+    fi
+    if git -C "${REPO_DIR}" checkout --detach --force "${resolved_sha}"; then
+      log "checked out ref=${REPO_REF} (${resolved_sha})"
+    else
+      log "failed to checkout ref=${REPO_REF}; exiting"
+      exit 1
     fi
   else
-    log "repo is detached; skipping pull"
+    default_sha="$(git -C "${REPO_DIR}" rev-parse --verify --quiet "refs/remotes/origin/HEAD^{commit}" 2>/dev/null || true)"
+    if [ -z "${default_sha}" ]; then
+      log "origin/HEAD not found; exiting"
+      exit 1
+    fi
+    if git -C "${REPO_DIR}" checkout --detach --force "${default_sha}"; then
+      log "checked out origin/HEAD (${default_sha})"
+    else
+      log "failed to checkout origin/HEAD; exiting"
+      exit 1
+    fi
   fi
 else
   log "git fetch failed; continuing without update"
@@ -191,24 +215,6 @@ if [ "${should_install}" -eq 1 ]; then
       --no-onboard
 fi
 
-if [ "${UPDATE_CHANNEL}" = "null" ]; then
-  UPDATE_CHANNEL=""
-fi
-
-if [ -n "${UPDATE_CHANNEL}" ]; then
-  case "${UPDATE_CHANNEL}" in
-    stable|beta|dev) ;;
-    *)
-      log "update_channel=${UPDATE_CHANNEL} is invalid; ignoring"
-      UPDATE_CHANNEL=""
-      ;;
-  esac
-fi
-
-if [ -n "${UPDATE_CHANNEL}" ]; then
-  log "update_channel=${UPDATE_CHANNEL}"
-fi
-
 cd "${REPO_DIR}"
 
 pnpm config set confirmModulesPurge false >/dev/null 2>&1 || true
@@ -219,9 +225,6 @@ fi
 
 log "running openclaw update"
 update_args=(update)
-if [ -n "${UPDATE_CHANNEL}" ]; then
-  update_args+=(--channel "${UPDATE_CHANNEL}")
-fi
 update_args+=(--no-restart)
 pnpm openclaw "${update_args[@]}"
 log "openclaw update complete; exiting to simulate restart"

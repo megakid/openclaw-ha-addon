@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.5
+- Config: replace update_channel with ref for git ref pinning.
+- Startup: fail fast if configured ref is missing.
+- Docs: update configuration guidance for ref pinning.
+
 ## 0.4.4
 - Startup: exit after `openclaw update --no-restart` to simulate restart.
 
