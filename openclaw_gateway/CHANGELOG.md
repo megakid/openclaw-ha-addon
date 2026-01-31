@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.6
+- Startup: run OpenClaw git installer only when repo changes or dist entry is missing.
+
 ## 0.4.5
 - Config: replace update_channel with ref for git ref pinning.
 - Startup: fail fast if configured ref is missing.
